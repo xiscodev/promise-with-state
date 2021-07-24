@@ -1,7 +1,7 @@
 import { FULFILLED, PENDING, REJECTED } from 'state'
 import { isPromise } from 'the-type-validator'
 
-const makeQuerablePromise = (promise) => {
+const makeQueryablePromise = (promise) => {
   if (!isPromise(promise)) {
     throw new Error('argument is not a Promise')
   }
@@ -22,7 +22,19 @@ const makeQuerablePromise = (promise) => {
       return rejection
     })
 
+  promise.isPending = function() {
+    return promise.state === PENDING
+  }
+
+  promise.isFulfilled = function() {
+    return promise.state === FULFILLED
+  }
+
+  promise.isRejected = function() {
+    return promise.state === REJECTED
+  }
+
   return promise
 }
 
-export default makeQuerablePromise
+export default makeQueryablePromise
