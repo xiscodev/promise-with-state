@@ -7,21 +7,21 @@ const QueryablePromiseState = {
   /**
    * @access public
    * @description Promise state PENDING for queryable
-   * @constant {string}
+   * @constant {QueryablePromiseState}
    */
   PENDING: 'PENDING',
 
   /**
    * @access public
    * @description Promise state FULFILLED for queryable
-   * @constant {string}
+   * @constant {QueryablePromiseState}
    */
   FULFILLED: 'FULFILLED',
 
   /**
    * @access public
    * @description Promise state REJECTED for queryable
-   * @constant {string}
+   * @constant {QueryablePromiseState}
    */
   REJECTED: 'REJECTED',
 }

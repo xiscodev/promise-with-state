@@ -30,7 +30,7 @@ import { QueryablePromise } from "promise-with-state";
 
 Then you can instantiate [QueryablePromise](#queryablepromise) to create Promises that are queryable for its state.
 
-* in the case it resolves
+*   in the case it resolves
 
 ```js
   import { QueryablePromise } from "promise-with-state";
@@ -61,7 +61,7 @@ Then you can instantiate [QueryablePromise](#queryablepromise) to create Promise
   .catch()
 ```
 
-* in the case it rejects
+*   in the case it rejects
 
 ```js
   import { QueryablePromise } from "promise-with-state";
@@ -265,16 +265,16 @@ Type: [object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Globa
 
 Promise state PENDING for queryable
 
-Type: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+Type: [QueryablePromiseState](#queryablepromisestate)
 
 ##### FULFILLED
 
 Promise state FULFILLED for queryable
 
-Type: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+Type: [QueryablePromiseState](#queryablepromisestate)
 
 ##### REJECTED
 
 Promise state REJECTED for queryable
 
-Type: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+Type: [QueryablePromiseState](#queryablepromisestate)
