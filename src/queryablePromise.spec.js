@@ -1,5 +1,5 @@
 import QueryablePromise from 'queryablePromise';
-import { FULFILLED, PENDING, REJECTED } from 'state';
+import QueryablePromiseState from 'queryablePromiseState';
 
 // ENVIRONMENT VARIABLES
 jest.useFakeTimers()
@@ -70,7 +70,7 @@ describe('QueryablePromise', () => {
   })
 
   it('should thenable on pending state be PENDING', () => {
-    expect(queryablePromiseResolve.state).toBe(PENDING)
+    expect(queryablePromiseResolve.state).toBe(QueryablePromiseState.PENDING)
   })
 
   it('should thenable on fulfill state be FULFILLED', () => {
@@ -78,7 +78,7 @@ describe('QueryablePromise', () => {
 
     queryablePromiseResolve
       .then(() => {
-        expect(queryablePromiseResolve.state).toBe(FULFILLED)
+        expect(queryablePromiseResolve.state).toBe(QueryablePromiseState.FULFILLED)
       })
       .catch()
     
@@ -92,7 +92,7 @@ describe('QueryablePromise', () => {
     queryablePromiseReject
     .then()
     .catch(() => {
-      expect(queryablePromiseReject.state).toBe(REJECTED)
+      expect(queryablePromiseReject.state).toBe(QueryablePromiseState.REJECTED)
     })
 
     jest.advanceTimersByTime(waitTime)

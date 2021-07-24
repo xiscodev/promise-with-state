@@ -1,40 +1,74 @@
-import { FULFILLED, PENDING, REJECTED } from 'state'
-import { isPromise } from 'the-type-validator'
+import QueryablePromiseState from 'queryablePromiseState'
+import { isPromise, isUndefined } from 'the-type-validator'
 
-const makeQueryablePromise = (promise) => {
-  if (!isPromise(promise)) {
+/**
+ * @access public
+ * @function makeQueryablePromise
+ * @description Transform any promise to queryable promise
+ * @param {Promise} thenable the promise to be transformed
+ * @returns {Promise} enhanced with state and state query methods
+ */
+const makeQueryablePromise = (thenable) => {
+  if (!isPromise(thenable)) {
     throw new Error('argument is not a Promise')
   }
 
-  if (promise.state === FULFILLED || promise.state === PENDING || promise.state === REJECTED) {
-    return promise
+  if (!isUndefined(thenable.state)) {
+    return thenable
   }
 
-  promise.state = PENDING
-
-  promise
+  thenable
     .then(resolution => {
-      promise.state = FULFILLED
+      thenable.state = QueryablePromiseState.FULFILLED
       return resolution
     })
     .catch(rejection => {
-      promise.state = REJECTED
+      thenable.state = QueryablePromiseState.REJECTED
       return rejection
     })
 
-  promise.isPending = function() {
-    return promise.state === PENDING
+  /**
+   * @access public
+   * @description The queryable promise state.
+   * @returns {QueryablePromiseState} contains current promise state
+   * @memberof makeQueryablePromise
+   */
+  thenable.state = QueryablePromiseState.PENDING
+
+  /**
+   * @access public
+   * @function isPending
+   * @description retrieves true if queried state is actual queryable promise state.
+   * @returns {boolean} true when queryable promise state is PENDING
+   * @memberof makeQueryablePromise
+   */
+  thenable.isPending = function() {
+    return thenable.state === QueryablePromiseState.PENDING
   }
 
-  promise.isFulfilled = function() {
-    return promise.state === FULFILLED
+  /**
+   * @access public
+   * @function isFulfilled
+   * @description retrieves true if queried state is actual queryable promise state.
+   * @returns {boolean} true when queryable promise state is FULFILLED
+   * @memberof makeQueryablePromise
+   */
+  thenable.isFulfilled = function() {
+    return thenable.state === QueryablePromiseState.FULFILLED
   }
 
-  promise.isRejected = function() {
-    return promise.state === REJECTED
+  /**
+   * @access public
+   * @function isRejected
+   * @description retrieves true if queried state is actual queryable promise state.
+   * @returns {boolean} true when queryable promise state is REJECTED
+   * @memberof makeQueryablePromise
+   */
+  thenable.isRejected = function() {
+    return thenable.state === QueryablePromiseState.REJECTED
   }
 
-  return promise
+  return thenable
 }
 
 export default makeQueryablePromise
