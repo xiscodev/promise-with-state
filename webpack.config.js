@@ -9,7 +9,7 @@ const isDev = process.env.NODE_ENV === 'development'
 const config = {
   mode: process.env.NODE_ENV,
   entry: `${SRC_DIR}/main.js`,
-  devtool: isDev ? 'source-map' : 'none',
+  devtool: isDev ? 'source-map' : 'nosources-source-map',
   output: {
     path: DIST_DIR,
     publicPath: DIST_DIR,
