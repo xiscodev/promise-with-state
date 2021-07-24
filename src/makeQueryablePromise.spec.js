@@ -1,11 +1,6 @@
 import makeQueryablePromise from 'makeQueryablePromise'
 import { FULFILLED, PENDING, REJECTED } from 'state'
 
-process.on('unhandledRejection', (reason, promise) => {
-  console.log('Unhandled Rejection at:', reason.stack || reason)
-  console.log('Unhandled Rejection from:', promise)
-})
-
 // ENVIRONMENT VARIABLES
 jest.useFakeTimers()
 
