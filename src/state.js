@@ -1,9 +1,0 @@
-const PENDING = 'PENDING'
-const FULFILLED = 'FULFILLED'
-const REJECTED = 'REJECTED'
-
-export {
-  PENDING,
-  FULFILLED,
-  REJECTED,
-}

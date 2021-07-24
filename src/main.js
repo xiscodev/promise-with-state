@@ -1,9 +1,7 @@
 import makeQueryablePromise from 'makeQueryablePromise'
 import QueryablePromise from 'queryablePromise'
-import { FULFILLED, PENDING, REJECTED } from 'state'
+import QueryablePromiseState from 'queryablePromiseState'
 
-exports.PENDING = PENDING
-exports.FULFILLED = FULFILLED
-exports.REJECTED = REJECTED
+exports.QueryablePromiseState = QueryablePromiseState
 exports.makeQueryablePromise = makeQueryablePromise
 exports.QueryablePromise = QueryablePromise
