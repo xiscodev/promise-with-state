@@ -15,12 +15,11 @@ const config = {
   output: {
     path: DIST_DIR,
     publicPath: DIST_DIR,
-    filename: 'main.ts',
+    filename: 'main.js',
   },
   resolve: {
     extensions: ['.ts'],
     modules: [SRC_DIR, NODE_DIR],
-    alias: {},
   },
   module: {
     rules: [
