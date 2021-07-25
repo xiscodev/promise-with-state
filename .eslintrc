@@ -6,22 +6,25 @@
     "es6": true,
     "jest/globals": true
   },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2015,
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
   "plugins": [
-    "import",
+    "@typescript-eslint",
     "jest",
     "jsdoc",
-    "node",
-    "promise",
-    "standard"
+    "import",
+    "promise"
   ],
   "extends": [
-    "standard",
     "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:jest/recommended",
     "plugin:jsdoc/recommended"
   ],
-  "parserOptions": {
-    "sourceType": "module"
-  },
   "rules": {
     "indent": ["error", 2],
     "space-before-function-paren": [
@@ -46,13 +49,12 @@
       "imports": "always-multiline",
       "exports": "always-multiline",
       "functions": "never"
-    }],
-    "no-prototype-builtins": "off"
+    }]
   },
   "settings": {
     "import/resolver": {"node": {"path": ["src"] }},
-    "import/extensions": [".js"],
-    "import/ignore": ["node_modules"]
+    "import/extensions": [".ts"],
+    "import/ignore": ["node_modules", "dist"]
   },
-  "ignorePatterns": "*.spec.js"
+  "ignorePatterns": "*.spec.ts"
 }

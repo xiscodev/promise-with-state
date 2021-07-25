@@ -1,3 +1,5 @@
+'use strict'
+
 const path = require('path')
 const TerserPlugin = require('terser-webpack-plugin')
 
@@ -8,31 +10,36 @@ const isDev = process.env.NODE_ENV === 'development'
 
 const config = {
   mode: process.env.NODE_ENV,
-  entry: `${SRC_DIR}/main.js`,
+  entry: `${SRC_DIR}/main.ts`,
   devtool: isDev ? 'source-map' : 'nosources-source-map',
   output: {
     path: DIST_DIR,
     publicPath: DIST_DIR,
-    filename: 'main.js',
+    filename: 'main.ts',
   },
   resolve: {
-    extensions: ['.js'],
+    extensions: ['.ts'],
     modules: [SRC_DIR, NODE_DIR],
     alias: {},
   },
   module: {
     rules: [
       {
-        test: /\.js$/i,
+        test: /\.ts$/i,
+        enforce: 'pre',
+        use: [
+          {
+            loader: 'babel-loader',
+            // options: {
+            //   fix: true,
+            //   cache: !isDev,
+            // },
+          },
+        ],
         exclude: [
           /node_modules/,
-          /\.spec\.js/,
+          /\.spec\.ts/,
         ],
-        loader: 'eslint-loader',
-        options: {
-          fix: true,
-          cache: !isDev,
-        },
       },
     ],
   },

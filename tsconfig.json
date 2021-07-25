@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "es2015",
+    "allowSyntheticDefaultImports": false,
+    "baseUrl": "./src",
+    "outDir": "./dist",
+    "types": [
+      "jest",
+      "node",
+      "webpack"
+    ]
+  },
+  "exclude": ["node_modules", "dist"],
+}

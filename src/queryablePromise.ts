@@ -5,23 +5,24 @@ import QueryablePromiseState from 'queryablePromiseState'
  * @class
  * @classdesc QueryablePromise extends from native Promise and appends a state property and a couple of state query methods.
  */
-class QueryablePromise extends Promise {
+class QueryablePromise extends Promise<any> {
+  private _state: string
   /**
    * @access private
-   * @param {Promise} thenable promise or thanable which contains fulfill and reject resolvers
+   * @param {CallableFunction} executor function which contains fulfill and reject resolvers for Promise
    * @description Creates an instance of QueryablePromise.
    * @constructs
    * @memberof QueryablePromise
    */
-  constructor (thenable) {
-    super((fulfill, reject) => thenable(
+  constructor (executor: CallableFunction) {
+    super((onFulfill, onReject) => executor(
       resolution => {
-        fulfill(resolution)
         this._state = QueryablePromiseState.FULFILLED
+        onFulfill(resolution)
       },
       rejection => {
-        reject(rejection)
         this._state = QueryablePromiseState.REJECTED
+        onReject(rejection)
       }
     ))
     this._state = QueryablePromiseState.PENDING
@@ -33,7 +34,7 @@ class QueryablePromise extends Promise {
    * @returns {QueryablePromiseState} contains current promise state
    * @memberof QueryablePromise
    */
-  get state () {
+  public get state (): string {
     return this._state
   }
 
@@ -44,7 +45,7 @@ class QueryablePromise extends Promise {
    * @returns {boolean} true when queryable promise state is PENDING
    * @memberof QueryablePromise
    */
-  isPending () {
+  public isPending (): boolean {
     return this._state === QueryablePromiseState.PENDING
   }
 
@@ -55,7 +56,7 @@ class QueryablePromise extends Promise {
    * @returns {boolean} true when queryable promise state is FULFILLED
    * @memberof QueryablePromise
    */
-  isFulfilled () {
+  public isFulfilled (): boolean {
     return this._state === QueryablePromiseState.FULFILLED
   }
 
@@ -66,7 +67,7 @@ class QueryablePromise extends Promise {
    * @returns {boolean} true when queryable promise state is REJECTED
    * @memberof QueryablePromise
    */
-  isRejected () {
+  public isRejected (): boolean {
     return this._state === QueryablePromiseState.REJECTED
   }
 }

@@ -6,13 +6,13 @@ jest.useFakeTimers()
 
 const waitTime = 2000
 
-let queryablePromiseResolve = new QueryablePromise((resolve, reject) => {
+let queryablePromiseResolve = new QueryablePromise((resolve) => {
   setTimeout(() => {
     resolve()
   }, 1000)
 })
 
-let queryablePromiseReject = new QueryablePromise((resolve, reject) => {
+let queryablePromiseReject = new QueryablePromise((reject) => {
   setTimeout(() => {
     reject()
   }, 1000)
@@ -21,13 +21,13 @@ let queryablePromiseReject = new QueryablePromise((resolve, reject) => {
 const _resetEnv = () => {
   jest.clearAllTimers()
 
-  queryablePromiseResolve = new QueryablePromise((resolve, reject) => {
+  queryablePromiseResolve = new QueryablePromise((resolve) => {
     setTimeout(() => {
       resolve()
     }, 1000)
   })
 
-  queryablePromiseReject = new QueryablePromise((resolve, reject) => {
+  queryablePromiseReject = new QueryablePromise((reject) => {
     setTimeout(() => {
       reject()
     }, 1000)
@@ -48,8 +48,9 @@ describe('QueryablePromise', () => {
     expect(typeof QueryablePromise.reject).toBe('function')
   })
 
-  it('should be instantiable', () => {
-    const queryable = new QueryablePromise()
+  it('should be instantiable with function', () => {
+    function callbackExecutor(onFulfill, onReject) {}
+    const queryable = new QueryablePromise(callbackExecutor)
     expect(typeof queryable).toBe('object')
   })
 
