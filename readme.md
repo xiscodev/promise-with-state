@@ -163,6 +163,8 @@ Native thenables can be transformed into queryable promises with [makeQueryableP
     })
 ```
 
+Powered by [https://xisco.dev](https://xisco.dev)
+
 <details>
 <summary>Additional JSDOC info</summary>
 
@@ -174,13 +176,12 @@ Native thenables can be transformed into queryable promises with [makeQueryableP
 
 *   [makeQueryablePromise](#makequeryablepromise)
     *   [Parameters](#parameters)
-    *   [state](#state)
     *   [isPending](#ispending)
     *   [isFulfilled](#isfulfilled)
     *   [isRejected](#isrejected)
 *   [QueryablePromise](#queryablepromise)
     *   [Parameters](#parameters-1)
-    *   [state](#state-1)
+    *   [state](#state)
     *   [isPending](#ispending-1)
     *   [isFulfilled](#isfulfilled-1)
     *   [isRejected](#isrejected-1)
@@ -191,19 +192,13 @@ Native thenables can be transformed into queryable promises with [makeQueryableP
 
 #### makeQueryablePromise
 
-Transform any promise to queryable promise
+Transform any promise to queryable promise.
 
 ##### Parameters
 
 *   `thenable` **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)** the promise to be transformed
 
-Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)** enhanced with state and state query methods
-
-##### state
-
-The queryable promise state.
-
-Returns **[QueryablePromiseState](#queryablepromisestate)** contains current promise state
+Returns **any** a promise enhanced with state query methods
 
 ##### isPending
 
@@ -229,11 +224,13 @@ Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/
 
 ##### Parameters
 
-*   `thenable` **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)** promise or thanable which contains fulfill and reject resolvers
+*   `executor` **CallableFunction** function which contains fulfill and reject resolvers for Promise
 
 ##### state
 
 Getter for queryable promise state.
+
+Type: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
 
 Returns **[QueryablePromiseState](#queryablepromisestate)** contains current promise state
 

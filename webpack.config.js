@@ -15,7 +15,7 @@ const config = {
   output: {
     path: DIST_DIR,
     publicPath: DIST_DIR,
-    filename: 'main.js',
+    filename: isDev ? 'main.js' : 'main.min.js',
   },
   resolve: {
     extensions: ['.ts'],
@@ -25,14 +25,10 @@ const config = {
     rules: [
       {
         test: /\.ts$/i,
-        enforce: 'pre',
+        // enforce: 'pre',
         use: [
           {
             loader: 'babel-loader',
-            // options: {
-            //   fix: true,
-            //   cache: !isDev,
-            // },
           },
         ],
         exclude: [
