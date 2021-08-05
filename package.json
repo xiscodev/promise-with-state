@@ -1,6 +1,6 @@
 {
   "name": "promise-with-state",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A library to use queryable promises or make native promise A+ queryable",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
