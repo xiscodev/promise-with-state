@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "target": "es6",
-    "allowSyntheticDefaultImports": false,
-    "baseUrl": "./",
-    "paths": {}
-  },
-  "exclude": ["node_modules", "dist"]
-}

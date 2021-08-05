@@ -4,19 +4,19 @@ import QueryablePromiseState from 'queryablePromiseState'
 // ENVIRONMENT VARIABLES
 jest.useFakeTimers()
 
-const waitTime = 2000
-const fakePromise = {}
+const testTime = 1000
+const promiseTime = 1000
 
 let promiseResolve = new Promise((resolve, reject) => {
   setTimeout(() => {
-    resolve()
-  }, 1000)
+    resolve('hasResolved')
+  }, promiseTime)
 })
 
 let promiseReject = new Promise((resolve, reject) => {
   setTimeout(() => {
-    reject()
-  }, 1000)
+    reject('hasRejected')
+  }, promiseTime)
 })
 
 const _resetEnv = () => {
@@ -24,14 +24,14 @@ const _resetEnv = () => {
 
   promiseResolve = new Promise((resolve, reject) => {
     setTimeout(() => {
-      resolve()
-    }, 1000)
+      resolve('hasResolved')
+    }, promiseTime)
   })
 
   promiseReject = new Promise((resolve, reject) => {
     setTimeout(() => {
-      reject()
-    }, 1000)
+      reject('hasRejected')
+    }, promiseTime)
   })
 }
 
@@ -43,15 +43,6 @@ describe('makeQueryablePromise', () => {
 
   it('should be a function', () => {
     expect(typeof makeQueryablePromise).toBe('function')
-  })
-
-  it('should be called with an argument', () => {
-    expect(makeQueryablePromise).toThrowError(Error)
-    expect(makeQueryablePromise).toThrowError('argument is not a Promise')
-  })
-
-  it('should receive thenable', () => {
-    expect(() => { makeQueryablePromise(fakePromise) }).toThrowError(Error)
   })
 
   it('should has state property after makeQueryablePromise', () => {
@@ -75,36 +66,37 @@ describe('makeQueryablePromise', () => {
   })
 
   it('should thenable on pending state be PENDING', () => {
-    _resetEnv()
     const queryablePromise = makeQueryablePromise(promiseResolve)
 
     expect(queryablePromise.state).toBe(QueryablePromiseState.PENDING)
   })
 
-  it('should thenable on fulfill state be FULFILLED', () => {
+  it('should thenable on fulfill state be FULFILLED', (done) => {
     _resetEnv()
     const queryablePromise = makeQueryablePromise(promiseResolve)
 
     queryablePromise
       .then(() => {
         expect(queryablePromise.state).toBe(QueryablePromiseState.FULFILLED)
+        done()
       })
       .catch()
-    
-    jest.advanceTimersByTime(waitTime)
+
+    jest.advanceTimersByTime(testTime)
   })
 
-  it('should thenable on reject state be REJECTED', () => {
+  it('should thenable on reject state be REJECTED', (done) => {
     _resetEnv()
     const queryablePromise = makeQueryablePromise(promiseReject)
 
     queryablePromise
-    .then()
-    .catch(() => {
-      expect(queryablePromise.state).toBe(QueryablePromiseState.REJECTED)
-    })
+      .then()
+      .catch(() => {
+        expect(queryablePromise.state).toBe(QueryablePromiseState.REJECTED)
+        done()
+      })
 
-    jest.advanceTimersByTime(waitTime)
+    jest.advanceTimersByTime(testTime)
   })
 
   it('should exist isPending method and return true on PENDING', () => {
@@ -114,29 +106,31 @@ describe('makeQueryablePromise', () => {
     expect(queryablePromise.isPending()).toBeTruthy()
   })
 
-  it('should exist isFulfilled method and return true on FULFILLED', () => {
+  it('should exist isFulfilled method and return true on FULFILLED', (done) => {
     _resetEnv()
     const queryablePromise = makeQueryablePromise(promiseResolve)
 
     queryablePromise
       .then(() => {
         expect(queryablePromise.isFulfilled()).toBeTruthy()
+        done()
       })
       .catch()
-    
-    jest.advanceTimersByTime(waitTime)
+
+    jest.advanceTimersByTime(testTime)
   })
 
-  it('should exist isRejected method and return true on REJECTED', () => {
+  it('should exist isRejected method and return true on REJECTED', (done) => {
     _resetEnv()
     const queryablePromise = makeQueryablePromise(promiseReject)
 
     queryablePromise
-    .then()
-    .catch(() => {
-      expect(queryablePromise.isRejected()).toBeTruthy()
-    })
+      .then()
+      .catch(() => {
+        expect(queryablePromise.isRejected()).toBeTruthy()
+        done()
+      })
 
-    jest.advanceTimersByTime(waitTime)
+    jest.advanceTimersByTime(testTime)
   })
 })
