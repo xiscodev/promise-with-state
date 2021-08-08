@@ -163,7 +163,7 @@ Native thenables can be transformed into queryable promises with [makeQueryableP
     })
 ```
 
-Powered by [https://xisco.dev](https://xisco.dev)
+Powered by <https://xisco.dev>
 
 <details>
 <summary>Additional JSDOC info</summary>
@@ -181,6 +181,17 @@ Powered by [https://xisco.dev](https://xisco.dev)
     *   [isRejected](#isrejected)
 *   [QueryablePromise](#queryablepromise)
     *   [Parameters](#parameters-1)
+    *   [resolve](#resolve)
+        *   [Parameters](#parameters-2)
+    *   [reject](#reject)
+        *   [Parameters](#parameters-3)
+    *   [toStringTag](#tostringtag)
+    *   [then](#then)
+        *   [Parameters](#parameters-4)
+    *   [catch](#catch)
+        *   [Parameters](#parameters-5)
+    *   [finally](#finally)
+        *   [Parameters](#parameters-6)
     *   [state](#state)
     *   [isPending](#ispending-1)
     *   [isFulfilled](#isfulfilled-1)
@@ -220,17 +231,73 @@ Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/
 
 #### QueryablePromise
 
-**Extends Promise**
-
 ##### Parameters
 
-*   `executor` **CallableFunction** function which contains fulfill and reject resolvers for Promise
+*   `fnExecutor` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** function which contains fulfill and reject resolvers for Promise
+
+##### resolve
+
+then method refers to promise method
+
+###### Parameters
+
+*   `x` **any** the result value of resolve
+
+Returns **[QueryablePromise](#queryablepromise)** the resolve instance of the class
+
+##### reject
+
+then method refers to promise method
+
+###### Parameters
+
+*   `y` **any** the reason or message error
+
+Returns **[QueryablePromise](#queryablepromise)** the reject instance of the class
+
+##### toStringTag
+
+the property \[Symbol.toStringTag] included in Promise
+
+Type: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+
+Returns **[QueryablePromise](#queryablepromise)** returns class instance
+
+##### then
+
+then method refers to promise method
+
+###### Parameters
+
+*   `fn` **any** method accepts a callback function
+
+Returns **[QueryablePromise](#queryablepromise)** returns class instance
+
+##### catch
+
+catch method refers to promise method
+
+###### Parameters
+
+*   `fn` **any** method accepts a callback function
+
+Returns **[QueryablePromise](#queryablepromise)** returns class instance
+
+##### finally
+
+catch method refers to promise method
+
+###### Parameters
+
+*   `fn` **any** method accepts a callback function
+
+Returns **[QueryablePromise](#queryablepromise)** returns class instance
 
 ##### state
 
 Getter for queryable promise state.
 
-Type: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+Type: [QueryablePromiseState](#queryablepromisestate)
 
 Returns **[QueryablePromiseState](#queryablepromisestate)** contains current promise state
 
