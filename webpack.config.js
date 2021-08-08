@@ -25,7 +25,6 @@ const config = {
     rules: [
       {
         test: /\.ts$/i,
-        // enforce: 'pre',
         use: [
           {
             loader: 'babel-loader',
