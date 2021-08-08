@@ -3,18 +3,20 @@ import QueryablePromiseState from 'queryablePromiseState';
 
 // ENVIRONMENT VARIABLES
 jest.useFakeTimers()
+const res = 'resolved'
+const rej = 'rejected'
 
 const waitTime = 2000
 
 let queryablePromiseResolve = new QueryablePromise((resolve) => {
   setTimeout(() => {
-    resolve()
+    resolve(res)
   }, 1000)
 })
 
 let queryablePromiseReject = new QueryablePromise((reject) => {
   setTimeout(() => {
-    reject()
+    reject(rej)
   }, 1000)
 })
 
@@ -23,13 +25,13 @@ const _resetEnv = () => {
 
   queryablePromiseResolve = new QueryablePromise((resolve) => {
     setTimeout(() => {
-      resolve()
+      resolve(res)
     }, 1000)
   })
 
   queryablePromiseReject = new QueryablePromise((reject) => {
     setTimeout(() => {
-      reject()
+      reject(rej)
     }, 1000)
   })
 }
