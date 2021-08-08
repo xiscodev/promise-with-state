@@ -26,7 +26,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xoxefdp/promise-with-state.git"
+    "url": "git+https://github.com/xiscodev/promise-with-state.git"
   },
   "keywords": [
     "promises",
@@ -37,9 +37,9 @@
   "author": "Jose Diaz <contact@xisco.dev>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/xoxefdp/promise-with-state/issues"
+    "url": "https://github.com/xiscodev/promise-with-state/issues"
   },
-  "homepage": "https://github.com/xoxefdp/promise-with-state#readme",
+  "homepage": "https://github.com/xiscodev/promise-with-state#readme",
   "devDependencies": {
     "@babel/core": "7.14.8",
     "@babel/preset-env": "7.14.8",
