@@ -8,7 +8,7 @@
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaVersion": 2015,
+    "ecmaVersion": 2020,
     "sourceType": "module",
     "project": "./tsconfig.json"
   },
@@ -26,7 +26,10 @@
     "plugin:jsdoc/recommended"
   ],
   "rules": {
-    "indent": ["error", 2],
+    "indent": [
+      "error",
+      2
+    ],
     "space-before-function-paren": [
       "error",
       {
@@ -42,19 +45,36 @@
         "allowTemplateLiterals": true
       }
     ],
-    "semi": [2, "never"],
-    "comma-dangle": ["error", {
-      "arrays": "always-multiline",
-      "objects": "always-multiline",
-      "imports": "always-multiline",
-      "exports": "always-multiline",
-      "functions": "never"
-    }]
+    "semi": [
+      2,
+      "never"
+    ],
+    "comma-dangle": [
+      "error",
+      {
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "always-multiline",
+        "exports": "always-multiline",
+        "functions": "never"
+      }
+    ]
   },
   "settings": {
-    "import/resolver": {"node": {"path": ["src"] }},
-    "import/extensions": [".ts"],
-    "import/ignore": ["node_modules", "dist"]
+    "import/resolver": {
+      "node": {
+        "path": [
+          "src"
+        ]
+      }
+    },
+    "import/extensions": [
+      ".ts"
+    ],
+    "import/ignore": [
+      "node_modules",
+      "dist"
+    ]
   },
   "ignorePatterns": "*.spec.ts"
 }

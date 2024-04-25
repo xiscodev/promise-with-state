@@ -92,10 +92,10 @@ Then you can instantiate [QueryablePromise](#queryablepromise) to create Promise
   })
 ```
 
-The states for queryable promises are grouped in a constant called [QueryablePromiseState](#queryablepromisestate)
+The states for queryable promises are grouped in a constant called [PromiseState](#promisestate)
 
 ```js
-  import { QueryablePromise, QueryablePromiseState } from "promise-with-state";
+  import { QueryablePromise, PromiseState } from "promise-with-state";
 
   const queryablePromise = new QueryablePromise((resolve, reject) => {
     // YOUR OWN CODE AND STUFF
@@ -103,9 +103,7 @@ The states for queryable promises are grouped in a constant called [QueryablePro
 
   console.log(queryablePromise.state)
   // PENDING
-  console.log(queryablePromise.isPending())
-  // true
-  console.log(queryablePromise.state === QueryablePromiseState.PENDING)
+  console.log(queryablePromise.state === PromiseState.PENDING)
   // true
   console.log(queryablePromise.isFulfilled())
   // false
@@ -116,7 +114,7 @@ The states for queryable promises are grouped in a constant called [QueryablePro
 Native thenables can be transformed into queryable promises with [makeQueryablePromise](#makequeryablepromise).
 
 ```js
-  import { makeQueryablePromise, QueryablePromiseState } from "promise-with-state";
+  import { makeQueryablePromise } from "promise-with-state";
 
   const processTextPromise = new Promise((resolve, reject) => {
     // YOUR OWN CODE AND STUFF
@@ -176,58 +174,54 @@ Powered by <https://xisco.dev>
 
 *   [makeQueryablePromise](#makequeryablepromise)
     *   [Parameters](#parameters)
-    *   [isPending](#ispending)
-    *   [isFulfilled](#isfulfilled)
-    *   [isRejected](#isrejected)
-*   [QueryablePromise](#queryablepromise)
-    *   [Parameters](#parameters-1)
-    *   [resolve](#resolve)
-        *   [Parameters](#parameters-2)
-    *   [reject](#reject)
-        *   [Parameters](#parameters-3)
-    *   [toStringTag](#tostringtag)
-    *   [then](#then)
-        *   [Parameters](#parameters-4)
-    *   [catch](#catch)
-        *   [Parameters](#parameters-5)
-    *   [finally](#finally)
-        *   [Parameters](#parameters-6)
-    *   [state](#state)
-    *   [isPending](#ispending-1)
-    *   [isFulfilled](#isfulfilled-1)
-    *   [isRejected](#isrejected-1)
-*   [QueryablePromiseState](#queryablepromisestate)
+*   [PromiseState](#promisestate)
     *   [PENDING](#pending)
     *   [FULFILLED](#fulfilled)
     *   [REJECTED](#rejected)
+*   [QueryablePromise](#queryablepromise)
+    *   [Parameters](#parameters-1)
+    *   [then](#then)
+        *   [Parameters](#parameters-2)
+    *   [catch](#catch)
+        *   [Parameters](#parameters-3)
+    *   [finally](#finally)
+        *   [Parameters](#parameters-4)
+    *   [state](#state)
+    *   [isPending](#ispending)
+    *   [isFulfilled](#isfulfilled)
+    *   [isRejected](#isrejected)
 
 #### makeQueryablePromise
 
-Transform any promise to queryable promise.
+Takes a native Promise and returns a QueryablePromise with state and query methods.
 
 ##### Parameters
 
-*   `thenable` **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)** the promise to be transformed
+*   `fnExecutor` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** The native Promise to be converted.
 
-Returns **any** a promise enhanced with state query methods
+Returns **[QueryablePromise](#queryablepromise)** A QueryablePromise instance with state and query methods.
 
-##### isPending
+#### PromiseState
 
-retrieves true if queried state is actual queryable promise state.
+Contains queryable promise states
 
-Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true when queryable promise state is PENDING
+##### PENDING
 
-##### isFulfilled
+Promise state PENDING for queryable promise
 
-retrieves true if queried state is actual queryable promise state.
+Type: [PromiseState](#promisestate)
 
-Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true when queryable promise state is FULFILLED
+##### FULFILLED
 
-##### isRejected
+Promise state FULFILLED for queryable promise
 
-retrieves true if queried state is actual queryable promise state.
+Type: [PromiseState](#promisestate)
 
-Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true when queryable promise state is REJECTED
+##### REJECTED
+
+Promise state REJECTED for queryable promise
+
+Type: [PromiseState](#promisestate)
 
 #### QueryablePromise
 
@@ -235,41 +229,14 @@ Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/
 
 *   `fnExecutor` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** function which contains fulfill and reject resolvers for Promise
 
-##### resolve
-
-then method refers to promise method
-
-###### Parameters
-
-*   `x` **any** the result value of resolve
-
-Returns **[QueryablePromise](#queryablepromise)** the resolve instance of the class
-
-##### reject
-
-then method refers to promise method
-
-###### Parameters
-
-*   `y` **any** the reason or message error
-
-Returns **[QueryablePromise](#queryablepromise)** the reject instance of the class
-
-##### toStringTag
-
-the property \[Symbol.toStringTag] included in Promise
-
-Type: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
-
-Returns **[QueryablePromise](#queryablepromise)** returns class instance
-
 ##### then
 
 then method refers to promise method
 
 ###### Parameters
 
-*   `fn` **any** method accepts a callback function
+*   `onFulfilled` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** callback function to run on fulfilled
+*   `onRejected` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** callback function to run on rejected
 
 Returns **[QueryablePromise](#queryablepromise)** returns class instance
 
@@ -279,7 +246,7 @@ catch method refers to promise method
 
 ###### Parameters
 
-*   `fn` **any** method accepts a callback function
+*   `onRejected` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** callback function to run on rejected
 
 Returns **[QueryablePromise](#queryablepromise)** returns class instance
 
@@ -289,7 +256,7 @@ catch method refers to promise method
 
 ###### Parameters
 
-*   `fn` **any** method accepts a callback function
+*   `onFinally` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** callback function that can run after fulfilled or rejected
 
 Returns **[QueryablePromise](#queryablepromise)** returns class instance
 
@@ -297,9 +264,9 @@ Returns **[QueryablePromise](#queryablepromise)** returns class instance
 
 Getter for queryable promise state.
 
-Type: [QueryablePromiseState](#queryablepromisestate)
+Type: [PromiseState](#promisestate)
 
-Returns **[QueryablePromiseState](#queryablepromisestate)** contains current promise state
+Returns **[PromiseState](#promisestate)** contains current promise state
 
 ##### isPending
 
@@ -318,27 +285,3 @@ Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/
 retrieves true if queried state is actual queryable promise state.
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true when queryable promise state is REJECTED
-
-#### QueryablePromiseState
-
-Contains queryable promise states
-
-Type: [object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)
-
-##### PENDING
-
-Promise state PENDING for queryable
-
-Type: [QueryablePromiseState](#queryablepromisestate)
-
-##### FULFILLED
-
-Promise state FULFILLED for queryable
-
-Type: [QueryablePromiseState](#queryablepromisestate)
-
-##### REJECTED
-
-Promise state REJECTED for queryable
-
-Type: [QueryablePromiseState](#queryablepromisestate)

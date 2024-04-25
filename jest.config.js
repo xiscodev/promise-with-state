@@ -15,7 +15,7 @@ module.exports = {
     //   displayName: 'linting',
     //   runner: 'jest-runner-tsc',
     //   testMatch: [
-    //     '<rootDir>/src/*.ts',
+    //     '<rootDir>/test/*.ts',
     //   ],
     //   transform: {
     //     '^.+\\.(ts|tsx)$': 'ts-jest',
@@ -24,7 +24,7 @@ module.exports = {
     {
       displayName: 'testing',
       testMatch: [
-        '<rootDir>/src/*.spec.ts',
+        '<rootDir>/test/*.spec.ts',
       ],
       transform: {
         '^.+\\.(ts|tsx)$': 'ts-jest',

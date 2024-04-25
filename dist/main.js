@@ -12,73 +12,44 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var queryablePromiseState__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! queryablePromiseState */ "./src/queryablePromiseState.ts");
+/* harmony import */ var queryablePromise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! queryablePromise */ "./src/queryablePromise.ts");
 
-var baseQueryableThenable = {
-  /**
-   * @access private
-   * @description The queryable promise state.
-   * @returns {string} contains current promise state
-   * @memberof makeQueryablePromise
-   */
-  state: queryablePromiseState__WEBPACK_IMPORTED_MODULE_0__.default.PENDING,
 
-  /**
-   * @access public
-   * @function isPending
-   * @description retrieves true if queried state is actual queryable promise state.
-   * @returns {boolean} true when queryable promise state is PENDING
-   * @memberof makeQueryablePromise
-   */
-  isPending: function isPending() {
-    return this.state === queryablePromiseState__WEBPACK_IMPORTED_MODULE_0__.default.PENDING;
-  },
-
-  /**
-   * @access public
-   * @function isFulfilled
-   * @description retrieves true if queried state is actual queryable promise state.
-   * @returns {boolean} true when queryable promise state is FULFILLED
-   * @memberof makeQueryablePromise
-   */
-  isFulfilled: function isFulfilled() {
-    return this.state === queryablePromiseState__WEBPACK_IMPORTED_MODULE_0__.default.FULFILLED;
-  },
-
-  /**
-   * @access public
-   * @function isRejected
-   * @description retrieves true if queried state is actual queryable promise state.
-   * @returns {boolean} true when queryable promise state is REJECTED
-   * @memberof makeQueryablePromise
-   */
-  isRejected: function isRejected() {
-    return this.state === queryablePromiseState__WEBPACK_IMPORTED_MODULE_0__.default.REJECTED;
-  }
-};
 /**
  * @access public
  * @function makeQueryablePromise
- * @description Transform any promise to queryable promise.
- * @param {Promise} thenable the promise to be transformed
- * @returns {any} a promise enhanced with state query methods
+ * @description Takes a native Promise and returns a QueryablePromise with state and query methods.
+ * @param {Function} fnExecutor - The native Promise to be converted.
+ * @returns {QueryablePromise} A QueryablePromise instance with state and query methods.
  */
-
-function makeQueryablePromise(thenable) {
-  var queryableThenable = Object.assign(thenable, baseQueryableThenable);
-  queryableThenable.then(function (result) {
-    queryableThenable.state = queryablePromiseState__WEBPACK_IMPORTED_MODULE_0__.default.FULFILLED; // console.log(1, queryableThenable)
-
-    return result;
-  })["catch"](function (error) {
-    queryableThenable.state = queryablePromiseState__WEBPACK_IMPORTED_MODULE_0__.default.REJECTED; // console.log(2, queryableThenable)
-
-    return error;
-  });
-  return queryableThenable;
+function makeQueryablePromise(fnExecutor) {
+  return new queryablePromise__WEBPACK_IMPORTED_MODULE_0__["default"](fnExecutor);
 }
-
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (makeQueryablePromise);
+
+/***/ }),
+
+/***/ "./src/promiseState.ts":
+/*!*****************************!*\
+  !*** ./src/promiseState.ts ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/**
+ * @access public
+ * @description Contains queryable promise states
+ */
+var PromiseState = /*#__PURE__*/function (PromiseState) {
+  PromiseState["PENDING"] = "PENDING";
+  PromiseState["FULFILLED"] = "FULFILLED";
+  PromiseState["REJECTED"] = "REJECTED";
+  return PromiseState;
+}(PromiseState || {});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (PromiseState);
 
 /***/ }),
 
@@ -92,30 +63,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var queryablePromiseState__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! queryablePromiseState */ "./src/queryablePromiseState.ts");
+/* harmony import */ var promiseState__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! promiseState */ "./src/promiseState.ts");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-
-
-var _queryable = Symbol('QueryablePromise');
-
-var _compositeThen = function _compositeThen(fn) {
-  return function (x) {
-    return fn(x), x;
-  };
-};
 /**
  * @access public
  * @class
  * @classdesc QueryablePromise extends from native Promise and appends a state property and a couple of state query methods.
  */
-
-
-var QueryablePromise = /*#__PURE__*/function (_Symbol$toStringTag) {
+var QueryablePromise = /*#__PURE__*/function () {
   /**
    * @access private
    * @param {Function} fnExecutor function which contains fulfill and reject resolvers for Promise
@@ -124,118 +87,104 @@ var QueryablePromise = /*#__PURE__*/function (_Symbol$toStringTag) {
    * @memberof QueryablePromise
    */
   function QueryablePromise(fnExecutor) {
+    var _this = this;
     _classCallCheck(this, QueryablePromise);
-
-    this[_queryable] = this._promiseWrapper(fnExecutor);
-  }
-  /**
-   * @access public
-   * @function resolve
-   * @description then method refers to promise method
-   * @param {any} x the result value of resolve
-   * @returns {QueryablePromise} the resolve instance of the class
-   * @memberof QueryablePromise
-   * @static
-   */
-
-
-  _createClass(QueryablePromise, [{
-    key: "_promiseWrapper",
-    value:
     /**
      * @access private
-     * @function _promiseWrapper
-     * @description creates and merge _state property in promise flow
-     * @param {any} exec is the promise executor function
-     * @returns {Promise} the reject instance of the class
+     * @type {Promise}
+     * @description Promise which states are been tracked
      * @memberof QueryablePromise
-     * @static
      */
-    function _promiseWrapper(exec) {
-      var _this = this;
-
-      this._state = queryablePromiseState__WEBPACK_IMPORTED_MODULE_0__.default.PENDING;
-      return new Promise(exec).then(_compositeThen(function () {
-        _this._state = queryablePromiseState__WEBPACK_IMPORTED_MODULE_0__.default.FULFILLED;
-      }))["catch"](function (err) {
-        _this._state = queryablePromiseState__WEBPACK_IMPORTED_MODULE_0__.default.REJECTED;
-        return Promise.reject(err);
+    /**
+     * @access private
+     * @type {PromiseState}
+     * @description The state of the Promise that is been tracked
+     * @memberof QueryablePromise
+     */
+    _defineProperty(this, "internalState", promiseState__WEBPACK_IMPORTED_MODULE_0__["default"].PENDING);
+    if (fnExecutor instanceof Promise) {
+      // console.log('Promise')
+      this.internalPromise = fnExecutor.then(function (result) {
+        _this.internalState = promiseState__WEBPACK_IMPORTED_MODULE_0__["default"].FULFILLED;
+        return result;
+      })["catch"](function (err) {
+        _this.internalState = promiseState__WEBPACK_IMPORTED_MODULE_0__["default"].REJECTED;
+        throw err;
+        // return Promise.reject(err)
+      });
+    } else {
+      // console.log('PromiseExecutor')
+      this.internalPromise = new Promise(function (onFulfilled, onRejected) {
+        return fnExecutor(function (value) {
+          _this.internalState = promiseState__WEBPACK_IMPORTED_MODULE_0__["default"].FULFILLED;
+          return onFulfilled(value);
+        }, function (reason) {
+          _this.internalState = promiseState__WEBPACK_IMPORTED_MODULE_0__["default"].REJECTED;
+          return onRejected(reason);
+        });
       });
     }
-    /**
-     * @access public
-     * @type {string}
-     * @description the property [Symbol.toStringTag] included in Promise
-     * @returns {QueryablePromise} returns class instance
-     * @memberof QueryablePromise
-     */
+  }
 
-  }, {
-    key: _Symbol$toStringTag,
-    get: function get() {
-      return 'QueryablePromise';
-    }
-    /**
-     * @access public
-     * @function then
-     * @description then method refers to promise method
-     * @param {any} fn method accepts a callback function
-     * @returns {QueryablePromise} returns class instance
-     * @memberof QueryablePromise
-     */
-
-  }, {
+  /**
+   * @access public
+   * @param {Function} onFulfilled callback function to run on fulfilled
+   * @param {Function} onRejected callback function to run on rejected
+   * @function then
+   * @description then method refers to promise method
+   * @returns {QueryablePromise} returns class instance
+   * @memberof QueryablePromise
+   */
+  return _createClass(QueryablePromise, [{
     key: "then",
-    value: function then(fn) {
-      this[_queryable].then(fn);
-
+    value: function then(onFulfilled, onRejected) {
+      this.internalPromise.then(onFulfilled, onRejected);
       return this;
     }
+
     /**
      * @access public
+     * @param {Function} onRejected callback function to run on rejected
      * @function catch
      * @description catch method refers to promise method
-     * @param {any} fn method accepts a callback function
      * @returns {QueryablePromise} returns class instance
      * @memberof QueryablePromise
      */
-
   }, {
     key: "catch",
-    value: function _catch(fn) {
-      this[_queryable]["catch"](fn);
-
+    value: function _catch(onRejected) {
+      this.internalPromise["catch"](onRejected);
       return this;
     }
+
     /**
      * @access public
+     * @param {Function} onFinally callback function that can run after fulfilled or rejected
      * @function finally
      * @description catch method refers to promise method
-     * @param {any} fn method accepts a callback function
      * @returns {QueryablePromise} returns class instance
      * @memberof QueryablePromise
      */
-
   }, {
     key: "finally",
-    value: function _finally(fn) {
-      this[_queryable]["finally"](fn);
-
+    value: function _finally(onFinally) {
+      this.internalPromise["finally"](onFinally);
       return this;
     }
+
     /**
      * @access public
-     * @type {QueryablePromiseState}
+     * @type {PromiseState}
      * @description Getter for queryable promise state.
-     * @returns {QueryablePromiseState} contains current promise state
+     * @returns {PromiseState} contains current promise state
      * @memberof QueryablePromise
      */
-
   }, {
     key: "state",
     get: function get() {
-      return this._state;
+      return this.internalState;
     }
+
     /**
      * @access public
      * @function isPending
@@ -243,12 +192,12 @@ var QueryablePromise = /*#__PURE__*/function (_Symbol$toStringTag) {
      * @returns {boolean} true when queryable promise state is PENDING
      * @memberof QueryablePromise
      */
-
   }, {
     key: "isPending",
     value: function isPending() {
-      return this._state === queryablePromiseState__WEBPACK_IMPORTED_MODULE_0__.default.PENDING;
+      return this.internalState === promiseState__WEBPACK_IMPORTED_MODULE_0__["default"].PENDING;
     }
+
     /**
      * @access public
      * @function isFulfilled
@@ -256,12 +205,12 @@ var QueryablePromise = /*#__PURE__*/function (_Symbol$toStringTag) {
      * @returns {boolean} true when queryable promise state is FULFILLED
      * @memberof QueryablePromise
      */
-
   }, {
     key: "isFulfilled",
     value: function isFulfilled() {
-      return this._state === queryablePromiseState__WEBPACK_IMPORTED_MODULE_0__.default.FULFILLED;
+      return this.internalState === promiseState__WEBPACK_IMPORTED_MODULE_0__["default"].FULFILLED;
     }
+
     /**
      * @access public
      * @function isRejected
@@ -269,83 +218,14 @@ var QueryablePromise = /*#__PURE__*/function (_Symbol$toStringTag) {
      * @returns {boolean} true when queryable promise state is REJECTED
      * @memberof QueryablePromise
      */
-
   }, {
     key: "isRejected",
     value: function isRejected() {
-      return this._state === queryablePromiseState__WEBPACK_IMPORTED_MODULE_0__.default.REJECTED;
-    }
-  }], [{
-    key: "resolve",
-    value: function resolve(x) {
-      return new QueryablePromise(function (onFulfill) {
-        return onFulfill(x);
-      });
-    }
-    /**
-     * @access public
-     * @function reject
-     * @description then method refers to promise method
-     * @param {any} y the reason or message error
-     * @returns {QueryablePromise} the reject instance of the class
-     * @memberof QueryablePromise
-     * @static
-     */
-
-  }, {
-    key: "reject",
-    value: function reject(y) {
-      return new QueryablePromise(function (_, onReject) {
-        return onReject(y);
-      });
+      return this.internalState === promiseState__WEBPACK_IMPORTED_MODULE_0__["default"].REJECTED;
     }
   }]);
-
-  return QueryablePromise;
-}(Symbol.toStringTag);
-
+}();
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (QueryablePromise);
-
-/***/ }),
-
-/***/ "./src/queryablePromiseState.ts":
-/*!**************************************!*\
-  !*** ./src/queryablePromiseState.ts ***!
-  \**************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/**
- * @access public
- * @description Contains queryable promise states
- * @constant {object}
- */
-var QueryablePromiseState = {
-  /**
-   * @access public
-   * @description Promise state PENDING for queryable
-   * @constant {QueryablePromiseState}
-   */
-  PENDING: 'PENDING',
-
-  /**
-   * @access public
-   * @description Promise state FULFILLED for queryable
-   * @constant {QueryablePromiseState}
-   */
-  FULFILLED: 'FULFILLED',
-
-  /**
-   * @access public
-   * @description Promise state REJECTED for queryable
-   * @constant {QueryablePromiseState}
-   */
-  REJECTED: 'REJECTED'
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (QueryablePromiseState);
 
 /***/ })
 
@@ -412,15 +292,15 @@ var __webpack_exports__ = {};
   !*** ./src/main.ts ***!
   \*********************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var makeQueryablePromise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! makeQueryablePromise */ "./src/makeQueryablePromise.ts");
+/* harmony import */ var promiseState__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! promiseState */ "./src/promiseState.ts");
 /* harmony import */ var queryablePromise__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! queryablePromise */ "./src/queryablePromise.ts");
-/* harmony import */ var queryablePromiseState__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! queryablePromiseState */ "./src/queryablePromiseState.ts");
+/* harmony import */ var makeQueryablePromise__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! makeQueryablePromise */ "./src/makeQueryablePromise.ts");
 
 
 
-exports.QueryablePromiseState = queryablePromiseState__WEBPACK_IMPORTED_MODULE_2__.default;
-exports.QueryablePromise = queryablePromise__WEBPACK_IMPORTED_MODULE_1__.default;
-exports.makeQueryablePromise = makeQueryablePromise__WEBPACK_IMPORTED_MODULE_0__.default;
+exports.PromiseState = promiseState__WEBPACK_IMPORTED_MODULE_0__["default"];
+exports.QueryablePromise = queryablePromise__WEBPACK_IMPORTED_MODULE_1__["default"];
+exports.makeQueryablePromise = makeQueryablePromise__WEBPACK_IMPORTED_MODULE_2__["default"];
 })();
 
 /******/ })()

@@ -1,7 +1,7 @@
-import makeQueryablePromise from 'makeQueryablePromise'
+import PromiseState from 'promiseState'
 import QueryablePromise from 'queryablePromise'
-import QueryablePromiseState from 'queryablePromiseState'
+import makeQueryablePromise from 'makeQueryablePromise'
 
-exports.QueryablePromiseState = QueryablePromiseState
+exports.PromiseState = PromiseState
 exports.QueryablePromise = QueryablePromise
 exports.makeQueryablePromise = makeQueryablePromise
