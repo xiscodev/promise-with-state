@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outFile": "dist/main.d.ts",
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "dist",
+    "tests",
+    "src/main.ts"
+  ]
+}
