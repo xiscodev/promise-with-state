@@ -1,62 +1,63 @@
 import PromiseState from 'promiseState'
+import PromiseExecutor from 'promiseExecutor'
 
 /**
  * @access public
  * @class
- * @classdesc QueryablePromise extends from native Promise and appends a state property and a couple of state query methods.
+ * @classdesc QueryablePromise that wraps a native Promise and appends a state property and a couple of state query methods.
  */
 class QueryablePromise<T> {
   /**
    * @access private
    * @type {Promise}
-   * @description Promise which states are been tracked
+   * @description Promise which states are been tracked.
    * @memberof QueryablePromise
    */
-  private internalPromise: Promise<T>
+  private innerPromise: Promise<T>
 
   /**
    * @access private
    * @type {PromiseState}
-   * @description The state of the Promise that is been tracked
+   * @description The state of the Promise that is been tracked.
    * @memberof QueryablePromise
    */
-  private internalState: PromiseState = PromiseState.PENDING
-
+  private innerState = PromiseState.PENDING
 
   /**
-   * @access private
-   * @param {Function} fnExecutor function which contains fulfill and reject resolvers for Promise
+   * @access public
+   * @param {Function} fnExecutor The native Promise or function which contains fulfill and reject callbacks
    * @description Creates an instance of QueryablePromise.
+   * @throws {Error} if the fnExecutor is invalid
    * @constructs
    * @memberof QueryablePromise
    */
   constructor (fnExecutor: Promise<T> | PromiseExecutor<T>) {
     if (fnExecutor instanceof Promise) {
-      // console.log('Promise')
-      this.internalPromise = fnExecutor
+      this.innerPromise = fnExecutor
         .then((result) => {
-          this.internalState = PromiseState.FULFILLED
+          this.innerState = PromiseState.FULFILLED
           return result
         })
-        .catch((err) => {
-          this.internalState = PromiseState.REJECTED
-          throw err
-          // return Promise.reject(err)
+        .catch((reason) => {
+          this.innerState = PromiseState.REJECTED
+          throw reason
         })
-    } else {
-      // console.log('PromiseExecutor')
-      this.internalPromise = new Promise<T>((onFulfilled, onRejected) => {
-        return fnExecutor(
+    } else if (typeof fnExecutor === 'function') {
+      const promiseExecutor: PromiseExecutor<T> = (onFulfilled, onRejected) => {
+        fnExecutor(
           (value) => {
-            this.internalState = PromiseState.FULFILLED
-            return onFulfilled(value)
+            this.innerState = PromiseState.FULFILLED
+            onFulfilled(value)
           },
           (reason) => {
-            this.internalState = PromiseState.REJECTED
-            return onRejected(reason)
+            this.innerState = PromiseState.REJECTED
+            onRejected(reason)
           }
         )
-      })
+      }
+      this.innerPromise = new Promise<T>(promiseExecutor)
+    } else {
+      throw new Error('The constructor must receive a Promise instance or a Promise executor function')
     }
   }
 
@@ -65,15 +66,15 @@ class QueryablePromise<T> {
    * @param {Function} onFulfilled callback function to run on fulfilled
    * @param {Function} onRejected callback function to run on rejected
    * @function then
-   * @description then method refers to promise method
+   * @description then method refers to promise method.
    * @returns {QueryablePromise} returns class instance
    * @memberof QueryablePromise
    */
   public then<R> (
-    onFulfilled: (value: T) => R,
-    onRejected?: (reason?: unknown) => R
+    onFulfilled: ((value: T) => R | PromiseLike<R>) | null,
+    onRejected?: ((reason?: unknown) => R | PromiseLike<R>) | null
   ): QueryablePromise<R> {
-    this.internalPromise.then(onFulfilled, onRejected)
+    this.innerPromise.then(onFulfilled, onRejected)
     return this as unknown as QueryablePromise<R>
   }
 
@@ -81,30 +82,30 @@ class QueryablePromise<T> {
    * @access public
    * @param {Function} onRejected callback function to run on rejected
    * @function catch
-   * @description catch method refers to promise method
+   * @description catch method refers to promise method.
    * @returns {QueryablePromise} returns class instance
    * @memberof QueryablePromise
    */
   public catch<R> (
-    onRejected?: (reason?: unknown) => R
+    onRejected?: ((reason?: unknown) => R | PromiseLike<R>) | null
   ): QueryablePromise<T> {
-    this.internalPromise.catch(onRejected)
-    return this
+    this.innerPromise.catch(onRejected)
+    return this as unknown as QueryablePromise<T>
   }
 
   /**
    * @access public
-   * @param {Function} onFinally callback function that can run after fulfilled or rejected
+   * @param {Function} onFinally callback function that can run after fulfilled or rejected states
    * @function finally
-   * @description catch method refers to promise method
+   * @description finally method refers to promise method.
    * @returns {QueryablePromise} returns class instance
    * @memberof QueryablePromise
    */
   public finally (
-    onFinally?: () => void
+    onFinally?: (() => void) | null
   ): QueryablePromise<T> {
-    this.internalPromise.finally(onFinally)
-    return this
+    this.innerPromise.finally(onFinally)
+    return this as unknown as QueryablePromise<T>
   }
 
   /**
@@ -115,40 +116,40 @@ class QueryablePromise<T> {
    * @memberof QueryablePromise
    */
   public get state (): PromiseState {
-    return this.internalState
+    return this.innerState
   }
 
   /**
    * @access public
    * @function isPending
-   * @description retrieves true if queried state is actual queryable promise state.
-   * @returns {boolean} true when queryable promise state is PENDING
+   * @description a function that retrieves if queried state is the actual queryable promise state.
+   * @returns {boolean} a boolean whether a queryable promise state is PENDING
    * @memberof QueryablePromise
    */
   public isPending (): boolean {
-    return this.internalState === PromiseState.PENDING
+    return this.innerState === PromiseState.PENDING
   }
 
   /**
    * @access public
    * @function isFulfilled
-   * @description retrieves true if queried state is actual queryable promise state.
-   * @returns {boolean} true when queryable promise state is FULFILLED
+   * @description a function that retrieves if queried state is the actual queryable promise state.
+   * @returns {boolean} a boolean whether a queryable promise state is FULFILLED
    * @memberof QueryablePromise
    */
   public isFulfilled (): boolean {
-    return this.internalState === PromiseState.FULFILLED
+    return this.innerState === PromiseState.FULFILLED
   }
 
   /**
    * @access public
    * @function isRejected
-   * @description retrieves true if queried state is actual queryable promise state.
-   * @returns {boolean} true when queryable promise state is REJECTED
+   * @description a function that retrieves if queried state is the actual queryable promise state.
+   * @returns {boolean} a boolean whether a queryable promise state is REJECTED
    * @memberof QueryablePromise
    */
   public isRejected (): boolean {
-    return this.internalState === PromiseState.REJECTED
+    return this.innerState === PromiseState.REJECTED
   }
 }
 
