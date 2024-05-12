@@ -12,23 +12,61 @@ A library to use queryable promises or make native promise A+ queryable.
 
 According to [Promises/A+](https://promisesaplus.com) standard definition, a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) is a "thenable" object, which sets itself into 3 different states: [PENDING](#pending), [FULFILLED](#fulfilled), or [REJECTED](#rejected). However, there is no way to ask a promise which state it is only know it has fulfilled or rejected. With this library you can create queryable promise or make native promise queryable.
 
+## A little bit about promises
+
+Let see a typical Promise use:
+
+```js
+new Promise((resolve, reject) => {
+  if (condition) {
+    resolve(result)
+  } else {
+    reject(err)
+  }
+})
+```
+
+A promise is built to fulfill or reject whatever its executor function defines, so a promise and its executor callback can look like this:
+
+```js
+const functionExecutor = (resolve, reject) => {
+  if (condition) {
+    resolve(result)
+  } else {
+    reject(err)
+  }
+}
+
+new Promise(functionExecutor)
+```
+
+This package was made to handle both cases, when a Promise instance is handled or if an executor callback is instead
+
+Feel free to look the source code on the [github repository](https://github.com/xiscodev/promise-with-state/) of this project
+
 ## How to use it?
 
-First you need to import it in your project.
+First you need to install it to your project.
 
-*The require way*
+```bash
+npm install promise-with-state
+```
+
+Then import it in your project.
+
+*   *The require way*
 
 ```js
 let { QueryablePromise } = require("promise-with-state");
 ```
 
-*The import way*
+*   *The import way*
 
 ```js
 import { QueryablePromise } from "promise-with-state";
 ```
 
-Then you can instantiate [QueryablePromise](#queryablepromise) to create Promises that are queryable for its state.
+Use it so you can instantiate [QueryablePromise](#queryablepromise) to create Promises that are queryable.
 
 *   in the case it resolves
 
@@ -65,11 +103,12 @@ Then you can instantiate [QueryablePromise](#queryablepromise) to create Promise
 
 ```js
   import { QueryablePromise } from "promise-with-state";
-
-  const queryableWithRejection = new QueryablePromise((resolve, reject) => {
+  const promiseExecutor = (resolve, reject) => {
     // YOUR OWN CODE AND STUFF
     reject()
-  })
+  }
+
+  const queryableWithRejection = new QueryablePromise(promiseExecutor)
 
   console.log(queryableWithRejection.state)
   // PENDING
@@ -82,33 +121,36 @@ Then you can instantiate [QueryablePromise](#queryablepromise) to create Promise
 
   queryableWithRejection
   .then() // promises always should has thenable
-  .catch(() => {
+  .catch((err) => {
     console.log(queryableWithRejection.state)
     // REJECTED
     console.log(queryableWithRejection.isPending())
     // false
     console.log(queryableWithRejection.isRejected())
     // true
+    handleError(err)
   })
 ```
 
 The states for queryable promises are grouped in a constant called [PromiseState](#promisestate)
 
 ```js
-  import { QueryablePromise, PromiseState } from "promise-with-state";
+  import { PromiseState } from "promise-with-state";
 
-  const queryablePromise = new QueryablePromise((resolve, reject) => {
+  console.log(PromiseState)
+  // {
+  //   "PENDING": "PENDING",
+  //   "FULFILLED": "FULFILLED",
+  //   "REJECTED": "REJECTED"
+  // }
+
+  const queryableWithResolution = new QueryablePromise((resolve, reject) => {
     // YOUR OWN CODE AND STUFF
+    resolve(foo)
   })
 
-  console.log(queryablePromise.state)
-  // PENDING
-  console.log(queryablePromise.state === PromiseState.PENDING)
+  console.log(queryableWithResolution.state === PromiseState.PENDING)
   // true
-  console.log(queryablePromise.isFulfilled())
-  // false
-  console.log(queryablePromise.isRejected())
-  // false
 ```
 
 Native thenables can be transformed into queryable promises with [makeQueryablePromise](#makequeryablepromise).
@@ -116,47 +158,40 @@ Native thenables can be transformed into queryable promises with [makeQueryableP
 ```js
   import { makeQueryablePromise } from "promise-with-state";
 
-  const processTextPromise = new Promise((resolve, reject) => {
+  const promiseExecutor = (resolve, reject) => {
     // YOUR OWN CODE AND STUFF
     if (condition) {
       resolve()
     } else {
       reject()
     }
-  })
+  }
 
+  const processTextPromise = new Promise(promiseExecutor)
   const queryableTextPromise = makeQueryablePromise(processTextPromise)
 
-  console.log(queryableTextPromise.state)
-  // PENDING
-  console.log(queryableTextPromise.isPending())
-  // true
-  console.log(queryableTextPromise.isFulfilled())
-  // false
-  console.log(queryableTextPromise.isRejected())
-  // false
-
-  processTextPromise
+  queryableTextPromise
     // if resolves
     .then(() => {
-      console.log(processTextPromise.state)
+      console.log(queryableTextPromise.state)
       // FULFILLED
-      console.log(processTextPromise.isPending())
+      console.log(queryableTextPromise.isPending())
       // false
-      console.log(processTextPromise.isFulfilled())
+      console.log(queryableTextPromise.isFulfilled())
       // true
     })
     // if rejects
     .catch(() => {
-      console.log(processTextPromise.state)
+      console.log(queryableTextPromise.state)
       // REJECTED
-      console.log(processTextPromise.isPending())
+      console.log(queryableTextPromise.isPending())
       // false
-      console.log(processTextPromise.isRejected())
+      console.log(queryableTextPromise.isRejected())
       // true
     })
+    // whatever happens here
     .finally(() => {
-      console.log(processTextPromise.isPending())
+      console.log(queryableTextPromise.isPending())
       // false
     })
 ```
@@ -174,6 +209,7 @@ Powered by <https://xisco.dev>
 
 *   [makeQueryablePromise](#makequeryablepromise)
     *   [Parameters](#parameters)
+*   [PromiseExecutor](#promiseexecutor)
 *   [PromiseState](#promisestate)
     *   [PENDING](#pending)
     *   [FULFILLED](#fulfilled)
@@ -197,9 +233,19 @@ Takes a native Promise and returns a QueryablePromise with state and query metho
 
 ##### Parameters
 
-*   `fnExecutor` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** The native Promise to be converted.
+*   `fnExecutor` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** The native Promise or function which contains fulfill and reject callbacks
+
+<!---->
+
+*   Throws **[Error](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error)** if the fnExecutor is invalid
 
 Returns **[QueryablePromise](#queryablepromise)** A QueryablePromise instance with state and query methods.
+
+#### PromiseExecutor
+
+describes what a promise executor should look like
+
+Type: function (fulfill: function (value: (T | PromiseLike\<T>)): void, reject: function (reason: any): void): void
 
 #### PromiseState
 
@@ -227,11 +273,11 @@ Type: [PromiseState](#promisestate)
 
 ##### Parameters
 
-*   `fnExecutor` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** function which contains fulfill and reject resolvers for Promise
+*   `fnExecutor` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** The native Promise or function which contains fulfill and reject callbacks
 
 ##### then
 
-then method refers to promise method
+then method refers to promise method.
 
 ###### Parameters
 
@@ -242,7 +288,7 @@ Returns **[QueryablePromise](#queryablepromise)** returns class instance
 
 ##### catch
 
-catch method refers to promise method
+catch method refers to promise method.
 
 ###### Parameters
 
@@ -252,11 +298,11 @@ Returns **[QueryablePromise](#queryablepromise)** returns class instance
 
 ##### finally
 
-catch method refers to promise method
+finally method refers to promise method.
 
 ###### Parameters
 
-*   `onFinally` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** callback function that can run after fulfilled or rejected
+*   `onFinally` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** callback function that can run after fulfilled or rejected states
 
 Returns **[QueryablePromise](#queryablepromise)** returns class instance
 
@@ -270,18 +316,18 @@ Returns **[PromiseState](#promisestate)** contains current promise state
 
 ##### isPending
 
-retrieves true if queried state is actual queryable promise state.
+a function that retrieves if queried state is the actual queryable promise state.
 
-Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true when queryable promise state is PENDING
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** a boolean whether a queryable promise state is PENDING
 
 ##### isFulfilled
 
-retrieves true if queried state is actual queryable promise state.
+a function that retrieves if queried state is the actual queryable promise state.
 
-Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true when queryable promise state is FULFILLED
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** a boolean whether a queryable promise state is FULFILLED
 
 ##### isRejected
 
-retrieves true if queried state is actual queryable promise state.
+a function that retrieves if queried state is the actual queryable promise state.
 
-Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true when queryable promise state is REJECTED
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** a boolean whether a queryable promise state is REJECTED
