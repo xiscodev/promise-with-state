@@ -1,58 +1,72 @@
-import PromiseState from 'promiseState'
-import QueryablePromise from 'queryablePromise'
+import { describe, test, jest, expect } from '@jest/globals'
+import PromiseExecutor from '../src/promiseExecutor'
+import PromiseState from '../src/promiseState'
+import QueryablePromise from '../src/queryablePromise'
 
 // ENVIRONMENT CONDITIONS
 jest.useFakeTimers()
-beforeEach(() => {
-  jest.clearAllTimers()
-})
 
 // ENVIRONMENT VARIABLES
 const testTime = 100
 const res = 'QueryablePromise hasResolved'
 const rej = 'QueryablePromise hasRejected'
+const numRes = 200
+const numRej = 500
 
 const promiseResolve = () => {
-  return new QueryablePromise<string>((resolve,_) => {
+  return new QueryablePromise<string>((resolve) => {
     setTimeout(() => resolve(res), testTime)
   })
 }
 
 const promiseReject = () => {
-  return new QueryablePromise<string>((_,reject) => {
+  return new QueryablePromise<string>((_, reject) => {
     setTimeout(() => reject(rej), testTime)
   })
 }
 
 //  UNIT TESTS
 describe('unit tests', () => {
-  it('should exist', () => {
+  test('should exist', () => {
     expect(QueryablePromise).not.toBeUndefined()
   })
 
-  it('should be instantiable with function', () => {
-    const fnExecutor :PromiseExecutor<string> = (resolve, reject) => {}
-    const queryablePromise = new QueryablePromise<string>(fnExecutor)
+  test('should be instantiable with function', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const fnExecutor: PromiseExecutor<string> = (_resolve, _reject) => {}
+    const queryablePromise = new QueryablePromise(fnExecutor)
     expect(typeof queryablePromise).toBe('object')
   })
 
-  it("should has state property and 'isState' functions", () => {
+  test('should has state property and \'isState\' functions', () => {
     const queryablePromise = promiseResolve()
-    expect(typeof queryablePromise.state).toHaveProperty
+    expect(queryablePromise).toHaveProperty('state')
     expect(typeof queryablePromise.isPending).toBe('function')
     expect(typeof queryablePromise.isFulfilled).toBe('function')
     expect(typeof queryablePromise.isRejected).toBe('function')
   })
 
-  it('should thenable on pending state be PENDING', () => {
+  test('should thenable on pending state be PENDING', () => {
     const queryablePromise = promiseResolve()
     expect(queryablePromise.state).toBe(PromiseState.PENDING)
+  })
+
+  test('should throw error if fnExecutor is not Promise instance or function', () => {
+    const fnExecutor = 42
+    const error = new Error('The constructor must receive a Promise instance or a Promise executor function')
+    try {
+      // @ts-expect-error: The constructor must receive a Promise instance or a Promise executor function
+      // eslint-disable-next-line no-new
+      new QueryablePromise(fnExecutor)
+    } catch (err) {
+      expect(err?.message).toBe(error.message)
+    }
   })
 })
 
 //  IMPLEMENTATION TESTS
 describe('implementation tests', () => {
-  it('should exist isPending method and return true on PENDING and false on FULFILLED', () => {
+  test('should exist isPending method and return true on PENDING and false on FULFILLED', () => {
     const queryablePromise = promiseResolve()
     expect(queryablePromise.isPending()).toBeTruthy()
 
@@ -65,7 +79,7 @@ describe('implementation tests', () => {
     expect(queryablePromise).resolves.toMatch(res)
   })
 
-  it('should thenable on fulfill state be FULFILLED', () => {
+  test('should thenable on fulfill state be FULFILLED', () => {
     const queryablePromise = promiseResolve()
       .then(() => {
         expect(queryablePromise.state).toBe(PromiseState.FULFILLED)
@@ -75,7 +89,7 @@ describe('implementation tests', () => {
     expect(queryablePromise).resolves.toMatch(res)
   })
 
-  it('should exist isFulfilled method and return true on FULFILLED', () => {
+  test('should exist isFulfilled method and return true on FULFILLED', () => {
     const queryablePromise = promiseResolve()
       .then(() => {
         expect(queryablePromise.isFulfilled()).toBeTruthy()
@@ -86,28 +100,31 @@ describe('implementation tests', () => {
   })
 
   // TODO: check callback resolve to be passed from outside
-  it('should thenable on fulfill state have run mockFn function once', () => {
+  test('should thenable on fulfill state have run mockFn function once', () => {
     const mockFn = jest.fn()
 
-    const queryablePromise = new QueryablePromise((resolve,_) => {
+    const promiseExecutor :PromiseExecutor<number> = (resolve) => {
       setTimeout(() => {
         // TODO: mockFn should be the resolve callback
         mockFn()
-        resolve(res)
+        resolve(numRes)
       }, testTime)
-    }).then(() => {
-      expect(queryablePromise.state).toBe(PromiseState.FULFILLED)
-    })
+    }
+
+    const queryablePromise = new QueryablePromise(promiseExecutor)
+      .then(() => {
+        expect(queryablePromise.state).toBe(PromiseState.FULFILLED)
+      })
 
     expect(mockFn).not.toHaveBeenCalled()
 
     jest.advanceTimersByTime(testTime)
 
     expect(mockFn).toHaveBeenCalledTimes(1)
-    expect(queryablePromise).resolves.toMatch(res)
+    expect(queryablePromise).resolves.toBe(numRes)
   })
 
-  it('should thenable on rejected state be REJECTED', () => {
+  test('should thenable on rejected state be REJECTED', () => {
     const queryablePromise = promiseReject()
       .catch(() => {
         expect(queryablePromise.state).toBe(PromiseState.REJECTED)
@@ -117,7 +134,7 @@ describe('implementation tests', () => {
     expect(queryablePromise).rejects.toMatch(rej)
   })
 
-  it('should exist isRejected method and return true on REJECTED', () => {
+  test('should exist isRejected method and return true on REJECTED', () => {
     const queryablePromise = promiseReject()
       .catch(() => {
         expect(queryablePromise.isRejected()).toBeTruthy()
@@ -128,32 +145,33 @@ describe('implementation tests', () => {
   })
 
   // TODO: check callback reject to be passed from outside
-  it('should thenable on rejected state have run mockFn function once', () => {
+  test('should thenable on rejected state have run mockFn function once', () => {
     const mockFn = jest.fn()
 
-    const queryablePromise = new QueryablePromise((_,reject) => {
+    const promiseExecutor :PromiseExecutor<number> = (_, reject) => {
       setTimeout(() => {
         // TODO: mockFn should be the reject callback
         mockFn()
-        reject(rej)
+        reject(numRej)
       }, testTime)
-    }).catch(() => {
-      expect(queryablePromise.state).toBe(PromiseState.REJECTED)
-    })
+    }
+
+    const queryablePromise = new QueryablePromise(promiseExecutor)
+      .catch(() => {
+        expect(queryablePromise.state).toBe(PromiseState.REJECTED)
+      })
 
     expect(mockFn).not.toHaveBeenCalled()
 
     jest.advanceTimersByTime(testTime)
 
     expect(mockFn).toHaveBeenCalledTimes(1)
-    expect(queryablePromise).rejects.toMatch(rej)
+    expect(queryablePromise).rejects.toBe(numRej)
   })
 
   // TODO: test finally method for cases
-  it('should not affect the resolved value when using finally', () => {
-    const queryablePromise = new QueryablePromise((resolve,_) => {
-      setTimeout(() => resolve(res), testTime)
-    })
+  test('should not affect the resolved value when using finally', () => {
+    const queryablePromise = promiseResolve()
 
     queryablePromise
       .finally(() => {
@@ -161,13 +179,11 @@ describe('implementation tests', () => {
       })
 
     jest.advanceTimersByTime(testTime)
-    expect(queryablePromise).resolves.toBe(res)
+    expect(queryablePromise).resolves.toMatch(res)
   })
 
-  // it('should not affect the rejected value when using finally', () => {
-  //   const queryablePromise = new QueryablePromise((_,reject) => {
-  //     setTimeout(() => reject(rej), testTime)
-  //   })
+  // test('should not affect the rejected value when using finally', () => {
+  //   const queryablePromise = promiseReject()
 
   //   queryablePromise
   //     .finally(() => {
@@ -176,10 +192,10 @@ describe('implementation tests', () => {
   //     })
 
   //   jest.advanceTimersByTime(testTime)
-  //   expect(queryablePromise).rejects.toBe(rej)
+  //   expect(queryablePromise).rejects.toMatch(rej)
   // })
 
-  it('should Promise allSettled work for QueryablePromise state FULFILLED', () => {
+  test('should Promise allSettled work for QueryablePromise state FULFILLED', () => {
     const queryablePromises = [promiseResolve(), promiseResolve()]
 
     Promise.allSettled(queryablePromises).then((results) => {
@@ -191,7 +207,7 @@ describe('implementation tests', () => {
     jest.advanceTimersByTime(testTime)
   })
 
-  it('should Promise allSettled work for QueryablePromise state REJECTED', () => {
+  test('should Promise allSettled work for QueryablePromise state REJECTED', () => {
     const queryablePromises = [promiseReject(), promiseReject()]
 
     Promise.allSettled(queryablePromises).then((results) => {
