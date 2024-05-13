@@ -1,6 +1,8 @@
 'use strict'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path')
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const TerserPlugin = require('terser-webpack-plugin')
 
 const SRC_DIR = path.resolve(__dirname, 'src')
@@ -15,11 +17,11 @@ const config = {
   output: {
     path: DIST_DIR,
     publicPath: DIST_DIR,
-    filename: isDev ? 'main.js' : 'main.min.js',
+    filename: isDev ? 'main.js' : 'main.min.js'
   },
   resolve: {
     extensions: ['.ts'],
-    modules: [SRC_DIR, NODE_DIR],
+    modules: [SRC_DIR, NODE_DIR]
   },
   module: {
     rules: [
@@ -27,23 +29,23 @@ const config = {
         test: /\.ts$/i,
         use: [
           {
-            loader: 'babel-loader',
-          },
+            loader: 'babel-loader'
+          }
         ],
         exclude: [
           /node_modules/,
-          /\.spec\.ts/,
-        ],
-      },
-    ],
-  },
+          /\.spec\.ts/
+        ]
+      }
+    ]
+  }
 }
 if (!isDev) {
   config.optimization = {
     minimize: true,
     minimizer: [new TerserPlugin({
-      parallel: true,
-    })],
+      parallel: true
+    })]
   }
 }
 

@@ -1,71 +1,16 @@
-import QueryablePromiseState from 'queryablePromiseState'
-
-const baseQueryableThenable: any = {
-  /**
-   * @access private
-   * @description The queryable promise state.
-   * @returns {string} contains current promise state
-   * @memberof makeQueryablePromise
-   */
-  state: QueryablePromiseState.PENDING,
-
-  /**
-   * @access public
-   * @function isPending
-   * @description retrieves true if queried state is actual queryable promise state.
-   * @returns {boolean} true when queryable promise state is PENDING
-   * @memberof makeQueryablePromise
-   */
-  isPending (): boolean {
-    return this.state === QueryablePromiseState.PENDING
-  },
-
-  /**
-   * @access public
-   * @function isFulfilled
-   * @description retrieves true if queried state is actual queryable promise state.
-   * @returns {boolean} true when queryable promise state is FULFILLED
-   * @memberof makeQueryablePromise
-   */
-  isFulfilled (): boolean {
-    return this.state === QueryablePromiseState.FULFILLED
-  },
-
-  /**
-   * @access public
-   * @function isRejected
-   * @description retrieves true if queried state is actual queryable promise state.
-   * @returns {boolean} true when queryable promise state is REJECTED
-   * @memberof makeQueryablePromise
-   */
-  isRejected (): boolean {
-    return this.state === QueryablePromiseState.REJECTED
-  },
-}
+import QueryablePromise from 'queryablePromise'
+import PromiseExecutor from 'promiseExecutor'
 
 /**
  * @access public
  * @function makeQueryablePromise
- * @description Transform any promise to queryable promise.
- * @param {Promise} thenable the promise to be transformed
- * @returns {any} a promise enhanced with state query methods
+ * @description Takes a native Promise and returns a QueryablePromise with state and query methods.
+ * @param {Function} fnExecutor The native Promise or function which contains fulfill and reject callbacks
+ * @throws {Error} if the fnExecutor is invalid
+ * @returns {QueryablePromise} A QueryablePromise instance with state and query methods.
  */
-function makeQueryablePromise (thenable: Promise<any>): any {
-  const queryableThenable: any = Object.assign(thenable, baseQueryableThenable)
-
-  queryableThenable
-    .then((result) => {
-      queryableThenable.state = QueryablePromiseState.FULFILLED
-      // console.log(1, queryableThenable)
-      return result
-    })
-    .catch((error) => {
-      queryableThenable.state = QueryablePromiseState.REJECTED
-      // console.log(2, queryableThenable)
-      return error
-    })
-
-  return queryableThenable
+function makeQueryablePromise<T> (fnExecutor: Promise<T> | PromiseExecutor<T>) :QueryablePromise<T> {
+  return new QueryablePromise<T>(fnExecutor)
 }
 
 export default makeQueryablePromise
